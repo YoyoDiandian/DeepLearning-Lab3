@@ -6,14 +6,14 @@
 .chat-messages {
     flex: 1;
     overflow-y: auto;
-    padding: 20px;
+    padding: 40px;
     display: flex;
     flex-direction: column;
 }
 
 .message {
     margin-bottom: 15px;
-    padding: 15px 20px;
+    padding: 15px 20px 5px 20px; /* 增加内边距 */
     border-radius: 18px;
     max-width: 70%;
     word-wrap: break-word;
@@ -76,7 +76,7 @@
 }
 
 .bot-message {
-    background-color: rgba(228, 228, 228, 0.5);
+    background-color: rgba(249, 255, 200, 0.345);
     align-self: flex-start;
     border: 1px solid rgba(200, 200, 200, 0.2);
 }

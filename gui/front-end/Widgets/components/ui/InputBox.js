@@ -7,12 +7,7 @@ class InputBox {
         this.element.type = 'text';
         this.element.placeholder = placeholder;
         this.element.className = className;
-        
-        this.element.style.position = 'absolute';
-        this.element.style.left = `${x}px`;
-        this.element.style.top = `${y}px`;
-        this.element.style.width = `${width}px`;
-        this.element.style.height = `${height}px`;
+    
         
         document.body.appendChild(this.element);
     }

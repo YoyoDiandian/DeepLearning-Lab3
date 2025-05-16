@@ -65,7 +65,7 @@ class ChatContainer {
         
         // 创建发送按钮
         this.sendButton = new Button(
-            "发送", 
+            "↑", 
             "#", 
             buttonX, 
             buttonY, 
@@ -74,14 +74,20 @@ class ChatContainer {
             "send-button"
         );
         
+        // Add inputBox to input-area
+        this.inputArea.appendChild(this.inputBox.element);
+        this.inputArea.appendChild(this.sendButton.element);
+        
         // 添加样式
-        this.inputBox.element.style.position = 'absolute';
-        this.sendButton.element.style.position = 'absolute';
-        this.sendButton.element.style.backgroundColor = this.isCalculatorMode ? 'rgba(1, 182, 46, 0.382)' : 'rgba(1, 225, 255, 0.382)';
+        // this.inputBox.element.style.position = 'absolute';
+        // this.sendButton.element.style.position = 'absolute';
+        // this.sendButton.element.style.backgroundColor = this.isCalculatorMode ? 'rgba(1, 182, 46, 0.382)' : 'rgba(1, 225, 255, 0.382)';
         this.sendButton.element.style.textAlign = 'center';
         this.sendButton.element.style.lineHeight = '30px';
-        this.sendButton.element.style.borderRadius = '5px';
+        // this.sendButton.element.style.borderRadius = '5px';
         
+        // this.inputBox.appendChild(this.sendButton.element);
+
         // 创建清除记录按钮
         this.clearButton = new Button(
             "清除记录", 
@@ -92,12 +98,6 @@ class ChatContainer {
             30, 
             "clear-button"
         );
-        
-        this.clearButton.element.style.position = 'absolute';
-        this.clearButton.element.style.backgroundColor = 'rgba(255, 99, 71, 0.5)';
-        this.clearButton.element.style.textAlign = 'center';
-        this.clearButton.element.style.lineHeight = '30px';
-        this.clearButton.element.style.borderRadius = '5px';
         
         // 绑定事件
         this.bindEvents();

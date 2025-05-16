@@ -1,4 +1,4 @@
-body, html {
+kody, html {
     margin: 0;
     padding: 0;
     width: 100%;
@@ -23,41 +23,33 @@ body::before {
     z-index: -1; /* 确保内容在背景上方 */
 }
 
-/* 修改聊天容器为水平flex布局 */
-.chat-container {
-    width: 90%;
-    max-width: 1200px;
-    height: 75vh;
-    margin: 50px auto 20px;
-    background-color: rgba(255, 255, 255, 0.45);
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    overflow: hidden;
-    display: flex;
-    flex-direction: row; /* 改为水平布局 */
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-}
 
 /* 侧边栏头部样式 */
 .chat-header {
-    width: 150px; /* 侧边栏宽度 */
+    width: 250px; /* 侧边栏宽度 */
     padding: 20px;
-    background-color: rgba(1, 182, 46, 0.306);
+    background-color: rgba(0, 242, 255, 0.206);
     color: #333;
     font-size: calc(var(--base-font-size) * 1.25);
     font-weight: bold;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-right: 1px solid rgba(0, 0, 0, 0.1);
+    border-right: 4px solid rgba(0, 0, 0, 0.1);
 }
 
 /* 添加标题图标（可选） */
-.chat-header::before {
-    content: "💬";
-    font-size: 2em;
-    margin-bottom: 15px;
+.chat-header img.icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.chat-header img.icon:hover {
+    transform: scale(1.1);
 }
 
 /* 主内容区域样式 */
@@ -68,39 +60,32 @@ body::before {
     overflow: hidden;
 }
 
-/* 聊天消息区域 */
-.chat-messages {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-}
-
 /* 输入区域样式 */
 .input-area {
-    padding: 15px;
+    /* padding: 20px; */
+    padding-left: 40px;
+    padding-right: 40px;
+    padding-top: 20px;
+    padding-bottom: 20px;
     background-color: rgba(240, 240, 240, 0.8);
     position: relative;
     height: 60px;
 }
 
-/* 返回按钮样式 */
-.back-button {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    padding: 10px 15px;
-    background-color: rgba(1, 225, 255, 0.382);
-    color: #333;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
+.chat-input {
+    width: 95%;
+    height: 60%;
+    padding: 10px;
+    margin: 20px, 40px, 20px, 40px;
+    border-radius: 20px;
+    border: 2px solid rgba(1, 225, 255, 0.6);
     font-size: var(--base-font-size);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
 }
 
-.back-button:hover {
-    background-color: rgba(1, 225, 255, 0.6);
-}
+/* 返回按钮样式 */
+
 
 /* 移除所有与Message.css重复的样式 */
 /* 消息样式、标题样式、代码样式等已在Message.css中定义 */

@@ -1,14 +1,17 @@
 .chat-container {
-    width: 80%;
-    max-width: 1500px;
-    height: 80vh;
+    width: 90%;
+    max-width: 1350px;
+    height: 85vh;
     margin: 50px auto 20px;
-    background-color: rgba(255, 255, 255, 0.132);
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    background-color: rgba(208, 243, 255, 0.45);
+    border-radius: 40px;
+    /* border: 3px solid rgba(134, 134, 134, 0.404); */
+    box-shadow: 0 0 10px 10px rgba(182, 237, 255, 0.45);
     overflow: hidden;
     display: flex;
-    flex-direction: column;
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
+    flex-direction: row; /* 改为水平布局 */
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    /* border: 1px solid rgba(255, 255, 255, 0.3); */
+    /* background: rgba(255, 255, 255, 0.2); */
 }

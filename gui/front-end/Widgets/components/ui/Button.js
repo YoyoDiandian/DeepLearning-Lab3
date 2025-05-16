@@ -13,11 +13,11 @@ class Button {
         this.element.className = `button ${className}`.trim();
         
         // 设置位置和大小
-        this.element.style.position = 'absolute';
-        this.element.style.left = `${x}px`;
-        this.element.style.top = `${y}px`;
-        this.element.style.width = `${width}px`;
-        this.element.style.height = `${height}px`;
+        // this.element.style.position = 'absolute';
+        // this.element.style.left = `${x}px`;
+        // this.element.style.top = `${y}px`;
+        // this.element.style.width = `${width}px`;
+        // this.element.style.height = `${height}px`;
         
         // 将元素添加到DOM - 使用提供的父元素或默认使用document.body
         const parentElement = parent || document.body;
