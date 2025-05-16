@@ -1,0 +1,44 @@
+/* filepath: /Users/yoyowang/Documents/Study/Junior_B/深度学习/PJ3/DeepLearning-Lab3/gui/frontend/Widgets/basicElement.css */
+/* 按钮基础样式 */
+.button {
+    display: inline-block;
+    position: absolute;
+    text-decoration: none;
+    text-align: center;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    color: #333;
+    transition: background-color 0.3s ease;
+}
+
+/* 输入框基础样式 */
+.inputBox {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 10px;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.inputBox:focus {
+    border-color: rgba(1, 225, 255, 0.6);
+    box-shadow: 0 0 5px rgba(1, 225, 255, 0.3);
+}
+
+/* 发送按钮 */
+.send-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* 清除记录按钮 */
+.clear-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}

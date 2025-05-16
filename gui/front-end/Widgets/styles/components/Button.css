@@ -1,0 +1,46 @@
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: calc(var(--base-font-size) * 1);
+    color: var(--text-color, #333);
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: var(--border-radius-small, 5px);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-align: center;
+    border: none;
+    outline: none;
+    position: absolute; /* 确保position样式被应用 */
+}
+
+.button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    background-color: rgba(1, 225, 255, 0.4);
+}
+
+.send-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: rgba(1, 225, 255, 0.382);
+}
+
+.clear-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: rgba(255, 99, 71, 0.5);
+}
+
+/* 自适应样式 */
+@media (max-width: 768px) {
+    .button {
+        font-size: calc(var(--base-font-size) * 0.9);
+    }
+}

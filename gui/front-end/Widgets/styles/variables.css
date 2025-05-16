@@ -1,0 +1,24 @@
+:root {
+    /* 颜色 */
+    --primary-color: rgba(1, 225, 255, 0.6);
+    --secondary-color: rgba(1, 182, 46, 0.306);
+    --background-color: rgba(255, 255, 255, 0.45);
+    --text-color: #333;
+    --light-color: #eee;
+    
+    /* 字体 */
+    --base-font-size: 16px;
+    --line-height-ratio: 1.5;
+    
+    /* 间距 */
+    --spacing-small: 5px;
+    --spacing-medium: 10px;
+    --spacing-large: 20px;
+    
+    /* 边框 */
+    --border-radius: 10px;
+    --border-radius-small: 5px;
+    
+    /* 阴影 */
+    --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}

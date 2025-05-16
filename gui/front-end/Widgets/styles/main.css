@@ -1,0 +1,15 @@
+/* 导入变量 */
+@import url('./variables.css');
+
+/* 导入基础样式 */
+@import 'base.css';
+
+/* 导入组件样式 */
+@import url('./components/Button.css');
+@import url('./components/InputBox.css');
+@import url('./components/Message.css');
+@import 'components/chat/ChatHeader.css';
+@import 'components/chat/ChatInput.css';
+@import url('./components/ChatContainer.css');
+
+/* 可以按需选择性导入 */

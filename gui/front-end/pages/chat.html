@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大模型实验平台</title>
+    <!-- 先引入变量和基础样式 -->
+    <link rel="stylesheet" href="../Widgets/styles/variables.css">
+    <!-- 引入主样式文件 -->
+    <link rel="stylesheet" href="../Widgets/styles/main.css">
+    <!-- 最后引入页面特定样式 -->
+    <link rel="stylesheet" href="./chat.css">
+</head>
+<body>
+    <a href="initial.html" class="back-button">返回主页</a>
+    
+    <div class="chat-container" id="chat-container">
+        <!-- 侧边栏标题 -->
+        <div class="chat-header" id="chat-header">AI 助手</div>
+        
+        <!-- 主内容区 -->
+        <div class="chat-main">
+            <div class="chat-messages" id="chat-messages">
+                <!-- 消息将通过 JavaScript 动态添加 -->
+            </div>
+            <div class="input-area" id="input-area">
+                <!-- 输入框和按钮将通过 JavaScript 动态添加 -->
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="chat.js"></script>
+</body>
+</html>
