@@ -21,10 +21,8 @@ class ChatContainer {
         
         // 根据模式设置页面标题和头部文本
         if (this.isCalculatorMode) {
-            this.header.textContent = '计算工具';
             document.title = '计算工具 - 大模型实验平台';
         } else {
-            this.header.textContent = 'AI 助手';
             document.title = 'AI 助手 - 大模型实验平台';
         }
         
@@ -67,10 +65,6 @@ class ChatContainer {
         this.sendButton = new Button(
             "↑", 
             "#", 
-            buttonX, 
-            buttonY, 
-            100, 
-            30, 
             "send-button"
         );
         
@@ -88,17 +82,27 @@ class ChatContainer {
         
         // this.inputBox.appendChild(this.sendButton.element);
 
+        this.chatHeader = document.createElement('div');
+        this.chatHeader.className = 'chat-title';
+        this.chatHeader.textContent = this.isCalculatorMode ? '计算工具' : 'AI 助手';
+        this.header.appendChild(this.chatHeader);
+
         // 创建清除记录按钮
         this.clearButton = new Button(
             "清除记录", 
             "#", 
-            buttonX - 120, 
-            buttonY, 
-            100, 
-            30, 
             "clear-button"
         );
-        
+
+        this.backButton = new Button(
+            "返回主页", 
+            "./initial.html", 
+            "back-button"
+        );
+
+        this.header.appendChild(this.clearButton.element);
+        this.header.appendChild(this.backButton.element);
+
         // 绑定事件
         this.bindEvents();
     }
@@ -129,8 +133,13 @@ class ChatContainer {
                 window.location.reload();
             }
         });
+        // 返回主页按钮点击事件
+        this.backButton.element.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.location.href = './initial.html';
+        });
     }
-    
+
     /**
      * 添加消息
      * @param {string} text - 消息文本
@@ -215,22 +224,29 @@ class ChatContainer {
             this.messagesContainer.removeChild(this.messagesContainer.firstChild);
         }
         
-        // 显示欢迎消息
-        const welcomeMessageElement = document.createElement('div');
-        welcomeMessageElement.className = 'message bot-message';
-        
-        if (this.isCalculatorMode) {
-            welcomeMessageElement.innerHTML = '你好！我是<strong>智能计算助手</strong>，既可以回答普通问题，也能解决复杂数学计算。<br>例如：<code>129032910921*188231</code> 或 <code>计算圆周率乘以2.5的平方是多少</code>';
-        } else {
-            welcomeMessageElement.textContent = '你好！我是AI助手，有什么可以帮助你的吗？';
-        }
-        
-        this.messagesContainer.appendChild(welcomeMessageElement);
+        // 使用Message类创建欢迎消息，并添加时间戳
         
         if (chatHistory.length === 0) {
+            let welcomeText;
+            if (this.isCalculatorMode) {
+                welcomeText = '你好！我是<strong>智能计算工具</strong>，既可以回答普通问题，也能解决复杂数学计算。<br>例如：<code>129032910921*188231</code> 或 <code>计算圆周率乘以2.5的平方是多少</code>';
+            } else {
+                welcomeText = '你好！我是AI助手，有什么可以帮助你的吗？';
+            }
+            
+            // 使用Message类创建欢迎消息并传入当前时间戳
+            const now = new Date();
+            const timeString = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+            const welcomeMessage = new Message(welcomeText, false, this.messagesContainer, timeString);
+            chatHistory.push({
+                text: welcomeText,
+                isUser: false,
+                timestamp: timeString
+            });
+            this.historyManager.saveMessage(welcomeMessage.getData());
             return;
         }
-        
+
         // 重新添加所有历史消息
         chatHistory.forEach(msg => {
             new Message(msg.text, msg.isUser, this.messagesContainer, msg.timestamp);

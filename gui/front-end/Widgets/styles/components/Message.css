@@ -76,7 +76,7 @@
 }
 
 .bot-message {
-    background-color: rgba(249, 255, 200, 0.345);
+    background-color: rgba(249, 255, 200, 0.556);
     align-self: flex-start;
     border: 1px solid rgba(200, 200, 200, 0.2);
 }

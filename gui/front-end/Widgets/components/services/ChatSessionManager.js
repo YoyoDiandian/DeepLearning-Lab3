@@ -1,59 +1,30 @@
-/**
- * 聊天会话管理器
- * 扩展现有的ChatHistoryManager，添加会话管理功能
- */
+// front-end/Widgets/components/services/ChatSessionManager.js
 class ChatSessionManager {
-    /**
-     * 创建会话管理器
-     * @param {string} storageKeyPrefix - 存储键前缀
-     */
     constructor(storageKeyPrefix = 'chat') {
         this.storageKeyPrefix = storageKeyPrefix;
         this.sessionsKey = `${storageKeyPrefix}_sessions`;
         this.currentSessionId = null;
-        
-        // 初始化或加载会话列表
         this.initSessions();
     }
-    
-    /**
-     * 初始化会话
-     */
+
     initSessions() {
-        // 获取或创建会话列表
         const sessions = this.getSessions();
-        
         if (!sessions || sessions.length === 0) {
-            // 如果没有会话，创建第一个会话
-            this.createNewSession();
+            this.createNewSession('默认会话');
         } else {
-            // 使用最近的会话
             this.currentSessionId = sessions[0].id;
         }
     }
-    
-    /**
-     * 获取会话列表
-     * @returns {Array} 会话列表
-     */
+
     getSessions() {
         const sessionsJson = localStorage.getItem(this.sessionsKey);
         return sessionsJson ? JSON.parse(sessionsJson) : [];
     }
-    
-    /**
-     * 保存会话列表
-     * @param {Array} sessions - 会话列表
-     */
+
     saveSessions(sessions) {
         localStorage.setItem(this.sessionsKey, JSON.stringify(sessions));
     }
-    
-    /**
-     * 创建新会话
-     * @param {string} title - 会话标题
-     * @returns {string} 新会话ID
-     */
+
     createNewSession(title = '新会话') {
         const sessionId = 'session_' + Date.now();
         const session = {
@@ -62,184 +33,321 @@ class ChatSessionManager {
             timestamp: Date.now(),
             messagesKey: `${this.storageKeyPrefix}_${sessionId}`
         };
-        
-        // 获取当前会话列表
         const sessions = this.getSessions();
-        
-        // 添加新会话到开头（最新的在前面）
         sessions.unshift(session);
-        
-        // 限制会话数量为10个
         if (sessions.length > 10) {
-            // 删除最旧的会话及其消息
             const oldestSession = sessions.pop();
             localStorage.removeItem(oldestSession.messagesKey);
         }
-        
-        // 保存会话列表
         this.saveSessions(sessions);
-        
-        // 设置为当前会话
         this.currentSessionId = sessionId;
-        
-        // 清空新会话的消息
         localStorage.setItem(session.messagesKey, JSON.stringify([]));
-        
         return sessionId;
     }
-    
-    /**
-     * 切换到指定会话
-     * @param {string} sessionId - 会话ID
-     * @returns {boolean} 是否成功切换
-     */
+
     switchSession(sessionId) {
         const sessions = this.getSessions();
         const session = sessions.find(s => s.id === sessionId);
-        
-        if (session) {
-            this.currentSessionId = sessionId;
-            
-            // 可以选择将选中的会话移动到列表顶部
-            const sessionIndex = sessions.findIndex(s => s.id === sessionId);
-            if (sessionIndex > 0) {
-                // 从当前位置移除
-                const [selectedSession] = sessions.splice(sessionIndex, 1);
-                // 添加到顶部
-                sessions.unshift(selectedSession);
-                // 保存更新后的顺序
-                this.saveSessions(sessions);
-            }
-            
-            return true;
+        if (!session) {
+            console.error(`会话ID ${sessionId} 不存在`);
+            return false;
         }
-        
-        return false;
+        this.currentSessionId = sessionId;
+        const sessionIndex = sessions.findIndex(s => s.id === sessionId);
+        if (sessionIndex > 0) {
+            const [selectedSession] = sessions.splice(sessionIndex, 1);
+            sessions.unshift(selectedSession);
+            selectedSession.timestamp = Date.now();
+            this.saveSessions(sessions);
+        }
+        return true;
     }
-    
-    /**
-     * 获取当前会话的消息历史
-     * @returns {Array} 消息历史
-     */
+
     getHistory() {
         if (!this.currentSessionId) {
+            console.warn('当前没有活跃会话');
             return [];
         }
-        
         const sessions = this.getSessions();
         const currentSession = sessions.find(s => s.id === this.currentSessionId);
-        
         if (!currentSession) {
+            console.error(`无法找到当前会话: ${this.currentSessionId}`);
+            if (sessions.length > 0) {
+                this.currentSessionId = sessions[0].id;
+                return this.getHistory();
+            }
             return [];
         }
-        
         const messagesJson = localStorage.getItem(currentSession.messagesKey);
         return messagesJson ? JSON.parse(messagesJson) : [];
     }
-    
-    /**
-     * 保存消息到当前会话
-     * @param {Object} message - 消息对象
-     */
+
     saveMessage(message) {
         if (!this.currentSessionId) {
-            // 如果没有当前会话，创建一个
             this.createNewSession();
         }
-        
         const sessions = this.getSessions();
         const currentSession = sessions.find(s => s.id === this.currentSessionId);
-        
         if (!currentSession) {
-            console.error('无法找到当前会话');
-            return;
+            console.error('无法找到当前会话，消息保存失败');
+            return false;
         }
-        
-        // 获取现有消息
+        if (!message.hasOwnProperty('text') || !message.hasOwnProperty('isUser')) {
+            console.error('消息格式不正确，必须包含text和isUser字段');
+            return false;
+        }
+        if (!message.timestamp) {
+            message.timestamp = Date.now();
+        }
         let messages = [];
         const messagesJson = localStorage.getItem(currentSession.messagesKey);
         if (messagesJson) {
-            messages = JSON.parse(messagesJson);
+            try {
+                messages = JSON.parse(messagesJson);
+            } catch (e) {
+                console.error('解析会话消息失败:', e);
+                messages = [];
+            }
         }
-        
-        // 添加新消息
         messages.push(message);
-        
-        // 限制每个会话的消息数量
         if (messages.length > 100) {
             messages = messages.slice(-100);
         }
-        
-        // 保存消息
         localStorage.setItem(currentSession.messagesKey, JSON.stringify(messages));
-        
-        // 更新会话时间戳
         currentSession.timestamp = Date.now();
-        
-        // 如果是第一条用户消息，设置会话标题
         if (messages.length === 1 && message.isUser) {
-            // 使用用户消息的前10个字符作为标题
             const title = message.text.slice(0, 10) + (message.text.length > 10 ? '...' : '');
             currentSession.title = title;
         }
-        
-        // 保存会话列表
         this.saveSessions(sessions);
+        return true;
     }
-    
-    /**
-     * 清除当前会话的历史记录
-     */
+
+    updateSessionTitle(sessionId, newTitle) {
+        if (!newTitle || newTitle.trim() === '') {
+            console.error('会话标题不能为空');
+            return false;
+        }
+        const sessions = this.getSessions();
+        const session = sessions.find(s => s.id === sessionId);
+        if (!session) {
+            console.error(`会话 ${sessionId} 不存在`);
+            return false;
+        }
+        session.title = newTitle.trim();
+        this.saveSessions(sessions);
+        return true;
+    }
+
     clearHistory() {
         if (!this.currentSessionId) {
-            return;
+            console.warn('当前没有活跃会话，无法清除历史记录');
+            return false;
         }
-        
         const sessions = this.getSessions();
         const currentSession = sessions.find(s => s.id === this.currentSessionId);
-        
-        if (currentSession) {
-            localStorage.setItem(currentSession.messagesKey, JSON.stringify([]));
+        if (!currentSession) {
+            console.error(`无法找到当前会话: ${this.currentSessionId}`);
+            return false;
         }
+        localStorage.setItem(currentSession.messagesKey, JSON.stringify([]));
+        return true;
     }
-    
-    /**
-     * 删除指定会话
-     * @param {string} sessionId - 会话ID
-     * @returns {boolean} 是否成功删除
-     */
+
     deleteSession(sessionId) {
         const sessions = this.getSessions();
         const sessionIndex = sessions.findIndex(s => s.id === sessionId);
-        
         if (sessionIndex === -1) {
+            console.error(`会话 ${sessionId} 不存在`);
             return false;
         }
-        
-        // 获取会话
         const session = sessions[sessionIndex];
-        
-        // 删除会话消息
         localStorage.removeItem(session.messagesKey);
-        
-        // 从列表中移除
         sessions.splice(sessionIndex, 1);
-        
-        // 保存更新后的会话列表
         this.saveSessions(sessions);
-        
-        // 如果删除的是当前会话，切换到第一个会话
         if (sessionId === this.currentSessionId) {
             if (sessions.length > 0) {
                 this.currentSessionId = sessions[0].id;
             } else {
-                // 如果没有会话了，创建一个新会话
                 this.createNewSession();
             }
         }
-        
         return true;
+    }
+
+    getCurrentSession() {
+        if (!this.currentSessionId) {
+            return null;
+        }
+        const sessions = this.getSessions();
+        return sessions.find(s => s.id === this.currentSessionId) || null;
     }
 }
 
 export default ChatSessionManager;
+
+// front-end/Widgets/components/chat/ChatContainer.js
+class ChatContainer {
+    constructor(containerId, headerId, messagesId, inputAreaId, mode = 'chat') {
+        this.container = document.getElementById(containerId);
+        this.header = document.getElementById(headerId);
+        this.messagesContainer = document.getElementById(messagesId);
+        this.inputArea = document.getElementById(inputAreaId);
+        this.mode = mode;
+        this.isChatMode = mode === 'chat';
+        this.isCalculatorMode = mode === 'calculator';
+        if (this.isCalculatorMode) {
+            this.header.textContent = '计算工具';
+            document.title = '计算工具 - 大模型实验平台';
+        } else {
+            this.header.textContent = 'AI 助手';
+            document.title = 'AI 助手 - 大模型实验平台';
+        }
+        this.storageKey = this.isCalculatorMode ? 'calculatorHistory' : 'chatHistory';
+        this.historyManager = new ChatHistoryManager(this.storageKey);
+        this.sessionManager = new ChatSessionManager(this.storageKey);
+        this.initComponents();
+        this.loadChatHistory();
+        this.updateHeaderTitle();
+    }
+
+    initComponents() {
+        const inputRect = this.inputArea.getBoundingClientRect();
+        const inputBoxWidth = inputRect.width - 120;
+        const inputBoxX = inputRect.left + 10;
+        const inputBoxY = inputRect.top + 15;
+        const buttonX = inputBoxX + inputBoxWidth + 10;
+        const buttonY = inputBoxY;
+        this.inputBox = new InputBox(
+            inputBoxX, 
+            inputBoxY, 
+            inputBoxWidth, 
+            30, 
+            this.isCalculatorMode ? "输入数学表达式或问题..." : "输入您的问题...", 
+            "chat-input"
+        );
+        this.sendButton = new Button(
+            "↑", 
+            "#", 
+            "send-button"
+        );
+        this.inputArea.appendChild(this.inputBox.element);
+        this.inputArea.appendChild(this.sendButton.element);
+        this.sendButton.element.style.textAlign = 'center';
+        this.sendButton.element.style.lineHeight = '30px';
+        this.clearButton = new Button(
+            "清除记录", 
+            "#", 
+            "clear-button"
+        );
+        this.newSessionButton = new Button(
+            "新增会话", 
+            "#", 
+            "new-session-button"
+        );
+        this.header.appendChild(this.newSessionButton.element);
+        this.bindEvents();
+    }
+
+    bindEvents() {
+        this.sendButton.element.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.sendMessage();
+        });
+        this.inputBox.element.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                this.sendMessage();
+            }
+        });
+        this.clearButton.element.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm('确定要清除所有聊天记录吗？')) {
+                this.historyManager.clearHistory();
+                window.location.reload();
+            }
+        });
+        this.newSessionButton.element.addEventListener('click', (e) => {
+            e.preventDefault();
+            this.createNewSession();
+        });
+    }
+
+    createNewSession() {
+        const newSessionId = this.sessionManager.createNewSession();
+        this.loadChatHistory();
+        this.updateHeaderTitle();
+        console.log('新会话已创建，ID:', newSessionId);
+    }
+
+    addMessage(text, isUser) {
+        const message = new Message(text, isUser, this.messagesContainer);
+        this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+        if (text !== '正在思考...') {
+            this.historyManager.saveMessage(message.getData());
+        }
+        return message;
+    }
+
+    sendMessage() {
+        const message = this.inputBox.getValue().trim();
+        if (!message) return;
+        this.addMessage(message, true);
+        this.inputBox.setValue('');
+        const typingIndicator = this.addMessage('正在思考...', false);
+        const apiEndpoint = this.isCalculatorMode 
+            ? 'http://localhost:8000/api/calculate' 
+            : 'http://localhost:8000/api/chat';
+        fetch(apiEndpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: message })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('网络错误：' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            typingIndicator.destroy();
+            this.addMessage(data.response, false);
+        })
+        .catch(error => {
+            typingIndicator.destroy();
+            this.addMessage('抱歉，发生了错误: ' + error.message, false);
+            console.error('Error:', error);
+        });
+    }
+
+    loadChatHistory() {
+        const chatHistory = this.historyManager.getHistory();
+        while (this.messagesContainer.firstChild) {
+            this.messagesContainer.removeChild(this.messagesContainer.firstChild);
+        }
+        const welcomeMessageElement = document.createElement('div');
+        welcomeMessageElement.className = 'message bot-message';
+        if (this.isCalculatorMode) {
+            welcomeMessageElement.innerHTML = '你好！我是<strong>智能计算助手</strong>，既可以回答普通问题，也能解决复杂数学计算。<br>例如：<code>129032910921*188231</code> 或 <code>计算圆周率乘以2.5的平方是多少</code>';
+        } else {
+            welcomeMessageElement.textContent = '你好！我是AI助手，有什么可以帮助你的吗？';
+        }
+        this.messagesContainer.appendChild(welcomeMessageElement);
+        if (chatHistory.length === 0) {
+            return;
+        }
+        chatHistory.forEach(msg => {
+            new Message(msg.text, msg.isUser, this.messagesContainer, msg.timestamp);
+        });
+        this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+    }
+
+    updateHeaderTitle() {
+        const currentSession = this.sessionManager.getCurrentSession();
+        if (currentSession) {
+            this.header.textContent = currentSession.title;
+        }
+    }
+}

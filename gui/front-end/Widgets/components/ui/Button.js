@@ -2,7 +2,7 @@
  * 按钮组件
  */
 class Button {
-    constructor(text, targetPage, x, y, width = 200, height = 80, className = "button", parent = null) {
+    constructor(text, targetPage, className = "button", parent = null) {
         this.text = text;
         this.targetPage = targetPage;
         

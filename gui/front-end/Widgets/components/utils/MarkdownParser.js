@@ -18,7 +18,9 @@ class MarkdownParser {
             .replace(/^#### (.*$)/gm, '<h4>$1</h4>')
             .replace(/^### (.*$)/gm, '<h3>$1</h3>')
             .replace(/^## (.*$)/gm, '<h2>$1</h2>')
-            .replace(/^# (.*$)/gm, '<h1>$1</h1>');
+            .replace(/^# (.*$)/gm, '<h1>$1</h1>')
+            .replace(/^- (.*$)/gm, '<li>$1</li>') // 列表项
+            .replace(/(?:^<li>.*<\/li>\n?)+/gm, match => `<ul>${match}</ul>`); // 将连续的列表项包装在ul标签中
         
         // 处理行内数学公式 $...$
         formattedText = formattedText.replace(/\$([^$]+)\$/g, (match, formula) => {
@@ -37,6 +39,7 @@ class MarkdownParser {
             .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>') // 代码块
             .replace(/`(.*?)`/g, '<code>$1</code>') // 行内代码
             .replace(/\n/g, '<br>'); // 换行符
+
             
         return formattedText;
     }
