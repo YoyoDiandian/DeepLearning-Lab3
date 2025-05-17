@@ -26,7 +26,7 @@ body::before {
 
 /* 侧边栏头部样式 */
 .chat-header {
-    width: 250px; /* 侧边栏宽度 */
+    width: 15%; /* 侧边栏宽度 */
     top: 10%;
     background-color: rgba(0, 242, 255, 0.206);
     color: #333;
@@ -79,13 +79,13 @@ body::before {
 /* 输入区域样式 */
 .input-area {
     /* padding: 20px; */
-    padding-left: 40px;
-    padding-right: 40px;
+    padding-left: 30px;
+    padding-right: 30px;
     padding-top: 20px;
     padding-bottom: 20px;
     background-color: rgba(240, 240, 240, 0.8);
     position: relative;
-    height: 60px;
+    height: 7%;
 }
 
 .chat-input {

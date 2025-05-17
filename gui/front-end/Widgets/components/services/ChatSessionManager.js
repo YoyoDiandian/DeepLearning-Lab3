@@ -234,7 +234,6 @@ class ChatContainer {
         this.inputArea.appendChild(this.inputBox.element);
         this.inputArea.appendChild(this.sendButton.element);
         this.sendButton.element.style.textAlign = 'center';
-        this.sendButton.element.style.lineHeight = '30px';
         this.clearButton = new Button(
             "清除记录", 
             "#", 

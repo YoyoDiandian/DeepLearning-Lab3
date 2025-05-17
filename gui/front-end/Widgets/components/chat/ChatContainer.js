@@ -77,7 +77,7 @@ class ChatContainer {
         // this.sendButton.element.style.position = 'absolute';
         // this.sendButton.element.style.backgroundColor = this.isCalculatorMode ? 'rgba(1, 182, 46, 0.382)' : 'rgba(1, 225, 255, 0.382)';
         this.sendButton.element.style.textAlign = 'center';
-        this.sendButton.element.style.lineHeight = '30px';
+        // this.sendButton.element.style.lineHeight = '30px';
         // this.sendButton.element.style.borderRadius = '5px';
         
         // this.inputBox.appendChild(this.sendButton.element);
@@ -235,13 +235,12 @@ class ChatContainer {
             }
             
             // 使用Message类创建欢迎消息并传入当前时间戳
-            const now = new Date();
-            const timeString = `${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-            const welcomeMessage = new Message(welcomeText, false, this.messagesContainer, timeString);
+            const initTimestamp = new Date().toLocaleTimeString()
+            const welcomeMessage = new Message(welcomeText, false, this.messagesContainer, initTimestamp);
             chatHistory.push({
                 text: welcomeText,
                 isUser: false,
-                timestamp: timeString
+                timestamp: initTimestamp
             });
             this.historyManager.saveMessage(welcomeMessage.getData());
             return;

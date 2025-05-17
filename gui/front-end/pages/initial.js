@@ -27,14 +27,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const calculatorButton = new Button('计算工具', './chat.html?mode=calculator');
 
     aiButton.element.style.position = 'absolute';
-    aiButton.element.style.left = leftButtonX + 'px';
-    aiButton.element.style.top = buttonY + 'px';
-    aiButton.element.style.width = '200px'; // 确保按钮在最上层
-    aiButton.element.style.height = '80px'; // 确保按钮在最上层
+    aiButton.element.style.left = '35%';
+    // aiButton.element.style.top = buttonY + 'px';
+    // aiButton.element.style.width = '200px'; // 确保按钮在最上层
+    // aiButton.element.style.height = '80px'; // 确保按钮在最上层
     calculatorButton.element.style.position = 'absolute';
-    calculatorButton.element.style.left = rightButtonX + 'px';
-    calculatorButton.element.style.top = buttonY + 'px';
-    calculatorButton.element.style.width = '200px'; // 确保按钮在最上层
-    calculatorButton.element.style.height = '80px'; // 确保按钮在最上层
+    calculatorButton.element.style.right = '35%';
+    aiButton.element.style.fontSize = '30px';
+    calculatorButton.element.style.fontSize = '30px';
+    // calculatorButton.element.style.top = buttonY + 'px';
+    // calculatorButton.element.style.width = '200px'; // 确保按钮在最上层
+    // calculatorButton.element.style.height = '80px'; // 确保按钮在最上层
 
 });
