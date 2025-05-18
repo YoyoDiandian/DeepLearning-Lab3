@@ -545,3 +545,71 @@ body::before {
     background: rgba(255, 99, 71, 0.15);
     box-shadow: 0 4px 8px rgba(255, 99, 71, 0.2);
 }
+
+/* 消息底部区域样式 */
+.message-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+/* 消息时间样式 */
+/* 删除冗余的 message-time 样式，已在上方定义 */
+
+/* 复制按钮样式 */
+.copy-button {
+    background: rgba(0, 132, 255, 0.08);
+    color: #0084ff;
+    border: none;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    opacity: 0.7;
+}
+
+.copy-button:hover {
+    background: rgba(0, 132, 255, 0.15);
+    transform: translateY(-1px);
+    opacity: 1;
+}
+
+/* 复制成功提示 */
+.copy-toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    z-index: 1000;
+    animation: toast-appear 0.3s forwards, toast-disappear 0.3s 1.7s forwards;
+}
+
+@keyframes toast-appear {
+    from {
+        opacity: 0;
+        transform: translate(-50%, 20px);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+@keyframes toast-disappear {
+    from {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+    to {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+}
