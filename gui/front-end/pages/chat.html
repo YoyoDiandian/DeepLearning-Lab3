@@ -10,13 +10,22 @@
     <link rel="stylesheet" href="../Widgets/styles/main.css">
     <!-- 最后引入页面特定样式 -->
     <link rel="stylesheet" href="./chat.css">
+    <!-- 添加修复样式 -->
+    <!-- <link rel="stylesheet" href="./chat-fixes.css"> -->
+    <!-- 添加代码高亮 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/styles/github.min.css">
 </head>
 <body>
-    <!-- <a href="initial.html" class="back-button">返回主页</a> -->
-    
     <div class="chat-container" id="chat-container">
-        <!-- 侧边栏标题 -->
-        <div class="chat-header" id="chat-header"></div>
+        <!-- 聊天头部 -->
+        <div class="chat-header" id="chat-header">
+            <div class="header-left">
+                <!-- Populated by JS: sidebar toggle, back button, title -->
+            </div>
+            <div class="header-actions">
+                <!-- Populated by JS: new session, clear history -->
+            </div>
+        </div>
 
         <!-- 主内容区 -->
         <div class="chat-main">
@@ -29,6 +38,8 @@
         </div>
     </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.7.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
     <script type="module" src="chat.js"></script>
 </body>
 </html>

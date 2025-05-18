@@ -12,7 +12,18 @@ class ChatSessionManager {
         if (!sessions || sessions.length === 0) {
             this.createNewSession('默认会话');
         } else {
-            this.currentSessionId = sessions[0].id;
+            // 尝试从localStorage恢复当前会话ID
+            const savedSessionId = localStorage.getItem(`${this.storageKeyPrefix}_current_session_id`);
+            
+            // 验证savedSessionId是否还存在于sessions中
+            if (savedSessionId && sessions.some(s => s.id === savedSessionId)) {
+                this.currentSessionId = savedSessionId;
+            } else {
+                // 如果无法恢复保存的会话ID，则使用第一个会话
+                this.currentSessionId = sessions[0].id;
+                // 更新localStorage中的当前会话ID
+                localStorage.setItem(`${this.storageKeyPrefix}_current_session_id`, this.currentSessionId);
+            }
         }
     }
 
@@ -52,7 +63,15 @@ class ChatSessionManager {
             console.error(`会话ID ${sessionId} 不存在`);
             return false;
         }
+        
+        // 更新当前会话ID
         this.currentSessionId = sessionId;
+        console.log(`切换到会话: ${sessionId}`);
+        
+        // 保存当前会话ID到localStorage，确保持久化
+        localStorage.setItem(`${this.storageKeyPrefix}_current_session_id`, sessionId);
+        
+        // 将选中的会话移到列表最前面
         const sessionIndex = sessions.findIndex(s => s.id === sessionId);
         if (sessionIndex > 0) {
             const [selectedSession] = sessions.splice(sessionIndex, 1);
@@ -60,26 +79,81 @@ class ChatSessionManager {
             selectedSession.timestamp = Date.now();
             this.saveSessions(sessions);
         }
+        
+        // 切换会话后自动刷新页面
+        window.location.reload();
+        
+        // 确保会话的消息数据已加载
+        const messagesJson = localStorage.getItem(session.messagesKey);
+        if (messagesJson) {
+            try {
+                const messages = JSON.parse(messagesJson);
+                console.log(`会话 ${sessionId} 已加载 ${messages.length} 条消息`);
+            } catch (e) {
+                console.error(`解析会话消息失败: ${e.message}`);
+            }
+        } else {
+            console.log(`会话 ${sessionId} 没有消息或无法加载消息`);
+        }
+        
         return true;
     }
 
     getHistory() {
+        // 如果没有当前会话ID，先尝试从localStorage恢复
         if (!this.currentSessionId) {
-            console.warn('当前没有活跃会话');
-            return [];
+            const savedSessionId = localStorage.getItem(`${this.storageKeyPrefix}_current_session_id`);
+            if (savedSessionId) {
+                this.currentSessionId = savedSessionId;
+                // 确保同步更新内存中的当前会话ID
+                console.log(`已从localStorage恢复会话ID: ${savedSessionId}`);
+            } else {
+                console.warn('当前没有活跃会话');
+                return [];
+            }
         }
+        
         const sessions = this.getSessions();
         const currentSession = sessions.find(s => s.id === this.currentSessionId);
+        
         if (!currentSession) {
             console.error(`无法找到当前会话: ${this.currentSessionId}`);
+            
+            // 如果找不到当前会话，但有其他会话可用，则切换到第一个会话
             if (sessions.length > 0) {
                 this.currentSessionId = sessions[0].id;
+                // 确保更新localStorage中的当前会话ID
+                localStorage.setItem(`${this.storageKeyPrefix}_current_session_id`, this.currentSessionId);
+                console.log(`切换到第一个可用会话: ${this.currentSessionId}`);
                 return this.getHistory();
             }
+            
             return [];
         }
+        
+        // 获取会话消息
         const messagesJson = localStorage.getItem(currentSession.messagesKey);
-        return messagesJson ? JSON.parse(messagesJson) : [];
+        let messages = [];
+        
+        try {
+            messages = messagesJson ? JSON.parse(messagesJson) : [];
+            console.log(`从会话 ${currentSession.id} 加载了 ${messages.length} 条消息`);
+        } catch (e) {
+            console.error(`解析会话消息失败: ${e.message}`);
+            // 如果解析失败，返回空数组
+            return [];
+        }
+        
+        // 确保消息数组正确排序（按时间戳升序）
+        if (messages.length > 0) {
+            messages.sort((a, b) => {
+                const timeA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+                const timeB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+                return timeA - timeB;
+            });
+        }
+        
+        return messages;
     }
 
     saveMessage(message) {
