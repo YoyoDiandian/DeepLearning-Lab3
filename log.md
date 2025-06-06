@@ -29,3 +29,7 @@
 ## 5.20
 - 删除note.md和main.py
 - 增加readme中实验结果的描述
+
+## 6.6
+- update了0-shot vs 5-shot的实验样例数目，更改输出规则。
+- 在`README.md`中增添了更多实验内容的描述。
